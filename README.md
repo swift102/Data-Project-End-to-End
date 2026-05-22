@@ -15,13 +15,13 @@
 
 ## 1. Project Context & Vision
 
-- **Project Name:** Key Stone Bank Analytics Platform  
+- **Project Name:** KeyStone Bank Analytics Platform  
 - **Vision:** Build a modern banking data platform that turns raw banking data into trusted insights, reports, dashboards, and future data science use cases.  
 - **Core Problem Statement:** Banking data is often spread across different systems such as customers, accounts, transactions, loans, cards, branches, and digital channels. Because the data is separated, it becomes difficult to get one trusted view of the business, build reliable reports, detect risks early, and support better decision-making.
 
 ### 1.1 Background
 
-The Keynote Bank data engineering and analytics project is a learning-focused but realistic initiative to design and build an end-to-end banking data platform using Microsoft Fabric concepts.
+The KeyStone Bank data engineering and analytics project is a learning-focused but realistic initiative to design and build an end-to-end banking data platform using Microsoft Fabric concepts.
 
 The aim is to create a central place where banking data can be collected, cleaned, organized, modeled, and made ready for reporting, analysis, and future machine learning work. Instead of having separate files, disconnected tables, and manual reports, this project will show how a real data team could move from raw banking data into trusted business-ready outputs.
 
