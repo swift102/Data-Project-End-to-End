@@ -15,7 +15,7 @@
 
 ## 1. Project Context & Vision
 
-- **Project Name:** Keynote Bank Analytics Platform  
+- **Project Name:** Key Stone Bank Analytics Platform  
 - **Vision:** Build a modern banking data platform that turns raw banking data into trusted insights, reports, dashboards, and future data science use cases.  
 - **Core Problem Statement:** Banking data is often spread across different systems such as customers, accounts, transactions, loans, cards, branches, and digital channels. Because the data is separated, it becomes difficult to get one trusted view of the business, build reliable reports, detect risks early, and support better decision-making.
 
