@@ -92,7 +92,7 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Fulufhelo Shavhani | fulufhelo@takueinno.onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, analysis |
 | Tebatso Mamabolo (/θvatso) | tebatso@takueinno.onmicrosoft.com | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
 | Tebogo Lesedi | tebogo@takueinno.onmicrosoft.com | ML Ops | Data | Reports, dashboards, KPIs, analysis |
-| Uhone Rasifudi | uhone@takueinno.onmicrosoft.com | Data Analyst | Data | Reports, dashboards, KPIs, analysis |
+| Uhone Rasifudi | uhone@takueinno.onmicrosoft.com | Data Engineer| Data | Reports, dashboards, KPIs, analysis |
 
 ### 3.2 Technology Resources
 
