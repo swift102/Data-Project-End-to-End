@@ -1,0 +1,39 @@
+Business Use Cases
+1.	Credit risk
+2.	Revenue reporting
+3.	Churn prediction and description analysis
+4.	Customer segmentation - reason rejection, KYC refresh cycles, SLAs, compliance, 
+
+First Business Use Case - Customer Segmentation
+1.	Who is classified as a customer? 
+2.	How long is the account active for (period)?
+3.	What information is collected for a customer?
+4.	Can customers exist without any classification? 
+5.	What is the relationship between customer and account?
+6.	How do we onboard our customers?
+7.	What is an account? 
+8.	What types of accounts exist?  i.e dormant 
+9.	What account classification exist? 
+10.	What transactions classifications exist?
+11.	What is a segment? Behavioural, socio-economic?
+12.	How are the segments defined or done? 
+13.	How is the segmentation or grouping done? 
+14.	Is demography a reliable way of segmenting customers? Which way is reliable when segmenting customers?
+15.	Does a personal level on education affect their classification?  And their credit risk?
+16.	Can one customer be in more than one segment?
+17.	What can cause segmentation change?
+18.	How many accounts can a customer have?
+19.	How does a customer account segmented?
+20.	What are the account tiers? How are they defined?
+21.	What are we segmenting for? Marketing, etc (What is the purpose of segmenting)
+22.	Does the number of products a customer have contribute to segmentation?
+23.	Does the amount in the account affect your classification or segmentation?
+24.	 Is there a relationship between the usage of a specific service in the bank with potentially getting a customer?
+25.	Do departments use customer segmentation the same way?  Is it a shared understanding of what segmentation is defined or used?
+
+
+Assumptions – Analytics and business analyst
+1.	
+
+
+•	A customer is a person who has active account or profile. So active does n
