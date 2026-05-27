@@ -45,9 +45,16 @@ First Business Use Case - Customer Segmentation
 24.	 Is there a relationship between the usage of a specific service in the bank with potentially getting a customer?
 25.	Do departments use customer segmentation the same way?  Is it a shared understanding of what segmentation is defined or used?
 
-| MECE BUCKET | Plain Meaning | Questions Covered  |
-| ------------|---------------| -------------------|
-|             |               |                    | 
+| MECE BUCKET | Plain Meaning | Questions Covered |
+| ------------|---------------|-------------------|
+| 1. Customer Identity & Eligibility | Who qualifies as a customer, what defines their existence in the system, what information is captured, and how they are onboarded | Q1, Q3, Q4, Q6 |
+| 2. Account Structure & Classification | What an account is, the types and classifications that exist, the tiers and how they are defined, and the lifecycle from active to dormant | Q2, Q7, Q8, Q9, Q20 |
+| 3. Customer–Account Relationship | How customers and accounts are connected, how many accounts a customer can hold, and how an account is segmented at the individual level | Q5, Q18, Q19 |
+| 4. Transaction Behaviour & Classification | What transaction types exist, how transactions are classified, and how account balance and activity inform customer standing | Q10, Q23 |
+| 5. Segmentation Definition & Method | What a segment is, whether it is behavioural or socio-economic, how segments are defined, and how the grouping or classification is performed | Q11, Q12, Q13, Q16 |
+| 6. Segmentation Drivers & Variables | What factors drive or change a customer's segment, including demographics, education, product holdings, service usage, and balance levels | Q14, Q15, Q17, Q22, Q23, Q24 |
+| 7. Segmentation Purpose & Consumers | Why segmentation is done, which teams use it, and whether there is a shared or conflicting definition across departments | Q21, Q25 |
+| 8. Data Ownership & Governance | Who owns and maintains segment definitions, who can change them, and which definition takes precedence when teams disagree — including KYC refresh cycles, SLAs, compliance, and rejection reasons | Derived from MECE CE gap + Q4 context + Use Case header note |
 
 
 
