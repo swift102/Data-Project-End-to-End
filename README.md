@@ -106,7 +106,7 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Fabric Notebooks | Used for ingestion, cleaning, transformation, and exploration |
 | SQL | Used for querying, modeling, and validation |
 | Power BI | Used for dashboards, reports, and semantic models |
-| GitHub | Stores project code, documentation, and version history |
+| GitHub | Stores project code, documentation, and version history | 
 | Excel / CSV / Parquet / JSON / PDF / TXT files | Possible starting data sources |
 | Draw.io / Miro / Visio / PowerPoint / Excalidraw | Used for architecture and data model diagrams |
 
@@ -118,6 +118,7 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Account data | Account ID, account type, balance, open date, status |
 | Transaction data | Transaction ID, date, amount, type, merchant, channel |
 | Loan data | Loan ID, customer ID, loan amount, repayment status, arrears |
+| GitHub URL | https://github.com/inhamo/Datasets-Advanced-2026/tree/main/banking_data
 
 ### 3.4 Documentation Resources
 
