@@ -10,7 +10,7 @@ Certainly. Here is the full governance documentation in Markdown, rewritten with
 
 ## 1. Objective
 
-This document provides a governance review of the current Microsoft Fabric workspace role assignments for the TakueInno project team. The review is conducted against each member's stated role and area of inquiry, applying the principle of least-privilege access. The goal is to validate that every team member has the permissions necessary to perform their duties, while highlighting any misalignments that pose a security risk or operational blocker.
+This document provides a governance review of the current Microsoft Fabric workspace role assignments for the KeyStone  project team. The review is conducted against each member's stated role and area of inquiry, applying the principle of least-privilege access. The goal is to validate that every team member has the permissions necessary to perform their duties, while highlighting any misalignments that pose a security risk or operational blocker.
 
 ## 2. Workspace Roles and Capabilities (Summary)
 
@@ -26,13 +26,13 @@ This document provides a governance review of the current Microsoft Fabric works
 
 | Name | Email | Role | Team / Department | Area of Inquiry |
 |---|---|---|---|---|
-| Vincent Chitsike | vincent@takueinno.onmicrosoft.com | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
-| Nomusa Lembede | nomusa@takueinno.onmicrosoft.com | Analytics Engineer (Team Lead) | Analytics | Pipelines, ingestion, storage, transformations |
-| Innocent Nhamo | takueinno@takueinno.onmicrosoft.com | Data Analyst & Governance | Analytics | Pipelines, ingestion, storage, transformations |
-| Fulufhelo Shavhani | fulufhelo@takueinno.onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, analysis |
-| Tebatso Mamabolo | tebatso@takueinno.onmicrosoft.com | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
-| Tebogo Lesedi | tebogo@takueinno.onmicrosoft.com | ML Ops | Data | Reports, dashboards, KPIs, analysis |
-| Uhone Rasifudi | uhone@takueinno.onmicrosoft.com | Data Engineer | Data | Reports, dashboards, KPIs, analysis |
+| Vincent Chitsike | vincent@KeyStone .onmicrosoft.com | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
+| Nomusa Lembede | nomusa@KeyStone .onmicrosoft.com | Analytics Engineer (Team Lead) | Analytics | Pipelines, ingestion, storage, transformations |
+| Innocent Nhamo | KeyStone @KeyStone .onmicrosoft.com | Data Analyst & Governance | Analytics | Pipelines, ingestion, storage, transformations |
+| Fulufhelo Shavhani | fulufhelo@KeyStone .onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, analysis |
+| Tebatso Mamabolo | tebatso@KeyStone .onmicrosoft.com | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
+| Tebogo Lesedi | tebogo@KeyStone .onmicrosoft.com | ML Ops | Data | Reports, dashboards, KPIs, analysis |
+| Uhone Rasifudi | uhone@KeyStone .onmicrosoft.com | Data Engineer | Data | Reports, dashboards, KPIs, analysis |
 
 ## 4. Individual Role Justifications and Findings
 
