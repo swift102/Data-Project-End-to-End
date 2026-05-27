@@ -1,8 +1,22 @@
+# USE CASES
+
+### METHODOLOGIES 
+- MECE (Mutually Exclusive Collectively Exhaustive)
+  - This helps you split problem into buckets tthat do not overlap and do no miss anything important. 
+  - *ME* - The buckets should not overlap. If a question about account status, is should not also be under customer demographics unless it truly has tow seprate meanings.
+  - "CE" - The buckets should cover the whole problem. If we ask about customers, accounts, transactions, business purpose, and department usage, we should not leave out onboarding or data ownership.
+
+
 Business Use Cases
 1.	Credit risk
 2.	Revenue reporting
 3.	Churn prediction and description analysis
 4.	Customer segmentation - reason rejection, KYC refresh cycles, SLAs, compliance, 
+
+### 1. CUSTOMER SEGMENTATION
+*Business Problem* - Keystone Bank wants to segment customer so that marketing, risk, product, service, and analytics teams can understand customer behaviour and make better decisions (i.e. increase revenue by offering the right products)
+*Core Challenge* - Different teams may mean different things by custoemr, account, active, dormant, high value, risky, loyal, and segment
+*MECE goal* - Seperate the problem into clean parts before designing tables, measures, models, dashboards, or data science features.
 
 First Business Use Case - Customer Segmentation
 1.	Who is classified as a customer? 
@@ -30,6 +44,11 @@ First Business Use Case - Customer Segmentation
 23.	Does the amount in the account affect your classification or segmentation?
 24.	 Is there a relationship between the usage of a specific service in the bank with potentially getting a customer?
 25.	Do departments use customer segmentation the same way?  Is it a shared understanding of what segmentation is defined or used?
+
+| MECE BUCKET | Plain Meaning | Questions Covered  |
+| ------------|---------------| -------------------|
+|             |               |                    | 
+
 
 
 Assumptions – Analytics and business analyst
