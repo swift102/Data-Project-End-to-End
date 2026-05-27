@@ -4,9 +4,9 @@ Certainly. Here is the full governance documentation in Markdown, rewritten with
 
 # Fabric Workspace Role Assignment: Governance Review
 
-**Prepared by:** Innocent Nhamo (Data Analyst & Governance)
+**Prepared by:** Innocent Nhamo (Data Analyst & Governance) 
 **Date:** 2026-05-27
-**Workspace:** TakueInno Project Workspace
+**Workspace:** Keystone Project Workspace
 
 ## 1. Objective
 
