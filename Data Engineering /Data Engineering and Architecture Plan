@@ -1,0 +1,26 @@
+## DATA ENGINEERING & ARCHITECTURE PLAN
+
+### Objectives
+1.	Data Profiling
+2.	Architecture Decisions
+3.	Data Model Sketch
+4.	Task Assignment
+
+### Data Profiling
+
+### Architecture Decisions
+1.	How are we going to ingest the data?  Watermarking (only problem is we must make sure the file structure is consistent throughout the files) Define schema, file path. The watermark should be year and months. WHAT ARE WE GOING TO DO ABOUT THE FOLDERS INSIDE THE MONTHS FOLDERS?? LET’S RESEARCH ON HOW TO PROPERLY HANDLE THOSE FOLDERS?
+2.	What are we ingesting? 2019 for a start but we are going to make it dynamic. The behaviour should be consistent through out when ingesting the other years. 
+3.	
+
+#### Bronze
+Bronze rules that must be enforced:
+•	No column renaming
+•	No filtering of rows
+•	No type casting
+•	No deduplication
+•	Land exactly what arrived, partition by source file name
+•	Add only two metadata columns: ingestion_timestamp and source_file
+
+#### Silver
+
