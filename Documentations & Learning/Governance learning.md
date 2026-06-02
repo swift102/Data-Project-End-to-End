@@ -29,10 +29,10 @@ This document provides a governance review of the current Microsoft Fabric works
 | Vincent Chitsike | vincent@KeyStone .onmicrosoft.com | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
 | Nomusa Lembede | nomusa@KeyStone .onmicrosoft.com | Analytics Engineer (Team Lead) | Analytics | Pipelines, ingestion, storage, transformations, dashboards |
 | Innocent Nhamo | KeyStone @KeyStone .onmicrosoft.com | Data Analyst & Governance | Analytics | Reports, dashboards, KPIs, analysis, governance |
-| Fulufhelo Shavhani | fulufhelo@KeyStone .onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, analysis |
+| Fulufhelo Shavhani | fulufhelo@KeyStone .onmicrosoft.com | ML Ops (Team Lead) | ML Ops | Reports, dashboards, KPIs, analysis |
 | Tebatso Mamabolo | tebatso@KeyStone .onmicrosoft.com | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
 | Tebogo Lesedi | tebogo@KeyStone .onmicrosoft.com | ML Ops | Data | Reports, dashboards, KPIs, analysis |
-| Philisiwe Msibi | philisiwe@KeyStone .onmicrosoft.com | Data Engineer | Data | Pipelines, ingestion, storage, transformations  |
+| Philisiwe Msibi | philisiwe@KeyStone .onmicrosoft.com | Data Engineer | Data Engineering | Pipelines, ingestion, storage, transformations  |
 
 ## 4. Individual Role Justifications and Findings
 
