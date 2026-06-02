@@ -431,6 +431,7 @@ If new files have been pushed to GitHub, the SHA will differ and a full re-clone
 | Schema drift across months (Parquet) | High | Medium | `read_reconciled()` casts conflicting columns to STRING; logged per entity |
 | `RAW_DIR` accumulates stale files across runs | Low | Low | Add `shutil.rmtree(RAW_DIR)` before `copytree` to fully reset (recommended) |
 | Git not available in Fabric runtime | Very Low | High | Verified available by default; `subprocess.run(["git"...])` confirmed working |
+| **2020 data gap (months 01–05)** | Confirmed | Medium | DQ-BRONZE-001: `account_limits_history`, `account_product_enrollments`, `account_signatories`, `account_status_events`, and `accounts` have no data for 2020 months 01–05. Source repo serves empty parquet shells. Months 06–12 present. Logged in `bronze_dq_gap_manifest`. Silver handles missing partitions gracefully. |
 
 ---
 
@@ -456,6 +457,13 @@ def with_bronze_meta(df):
 - **Schema conflicts in Parquet:** Some entities have type-inconsistent columns across months (e.g., `account_id` as `int` in 2019 and `string` in 2021). These are automatically cast to `STRING` in Bronze and flagged in the run log. Silver enforces the authoritative type.
 - **LFS files:** `transactions.jsonl` files are Git LFS pointers. The notebook detects these via a header sniff and hydrates them via direct HTTP before ingestion.
 - **CSV filenames carry no date:** The `year`/`month` partition columns are derived entirely from the folder path (`/2019/01/customer_communications/...`), not the filename.
+- - **2020 data gap (DQ-BRONZE-001):** `account_limits_history`, `account_product_enrollments`, 
+  `account_signatories`, `account_status_events`, and `accounts` contain no data for 2020 months 
+  01–05. The source GitHub repo serves valid PAR1 parquet headers with `"columns": []` — empty 
+  shells, not LFS pointers. Confirmed by `000_DQ_2020_data_gap_investigation` notebook. 
+  Months 06–12 of 2020 are present and ingested normally. A `bronze_dq_gap_manifest` Delta 
+  table records all 24 affected files for Silver/Gold reference. Any year-over-year analytics 
+  comparing 2019 vs 2020 for these entities should exclude months 01–05 from 2020.
 
 ### C. Repo Structure (Source Dataset)
 
