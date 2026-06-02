@@ -456,7 +456,7 @@ def with_bronze_meta(df):
 - **Schema conflicts in Parquet:** Some entities have type-inconsistent columns across months (e.g., `account_id` as `int` in 2019 and `string` in 2021). These are automatically cast to `STRING` in Bronze and flagged in the run log. Silver enforces the authoritative type.
 - **LFS files:** `transactions.jsonl` files are Git LFS pointers. The notebook detects these via a header sniff and hydrates them via direct HTTP before ingestion.
 - **CSV filenames carry no date:** The `year`/`month` partition columns are derived entirely from the folder path (`/2019/01/customer_communications/...`), not the filename.
-- - **2020 data gap (DQ-BRONZE-001):** `account_limits_history`, `account_product_enrollments`, 
+- **2020 data gap (DQ-BRONZE-001):** `account_limits_history`, `account_product_enrollments`, 
   `account_signatories`, `account_status_events`, and `accounts` contain no data for 2020 months 
   01–05. The source GitHub repo serves valid PAR1 parquet headers with `"columns": []` — empty 
   shells, not LFS pointers. Confirmed by `000_DQ_2020_data_gap_investigation` notebook. 
