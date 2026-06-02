@@ -1,7 +1,6 @@
 # 🏦 Keystone Banking Data Pipeline
 ### *A Medallion Architecture Implementation on Microsoft Fabric*
 
-[![Microsoft Fabric](https://img.shields.io/badge/Microsoft%20Fabric-Free%20Trial-blue?style=flat-square&logo=microsoft)](https://fabric.microsoft.com)
 [![Architecture](https://img.shields.io/badge/Architecture-Medallion-green?style=flat-square)](https://www.databricks.com/glossary/medallion-architecture)
 [![Bronze](https://img.shields.io/badge/Bronze%20Layer-Complete-success?style=flat-square)]()
 [![Silver](https://img.shields.io/badge/Silver%20Layer-In%20Progress-yellow?style=flat-square)]()
