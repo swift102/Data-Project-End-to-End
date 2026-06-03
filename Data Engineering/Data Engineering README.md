@@ -1,9 +1,11 @@
 # 🏦 Keystone Banking Data Pipeline
 ### *A Medallion Architecture Implementation on Microsoft Fabric*
 
+[![Microsoft Fabric](https://img.shields.io/badge/Microsoft%20Fabric-Free%20Trial-blue?style=flat-square&logo=microsoft)](https://fabric.microsoft.com)
+[![Microsoft Fabric](https://img.shields.io/badge/Microsoft%20Fabric-Free%20Trial-blue?style=flat-square&logo=microsoft)](https://fabric.microsoft.com)
 [![Architecture](https://img.shields.io/badge/Architecture-Medallion-green?style=flat-square)](https://www.databricks.com/glossary/medallion-architecture)
 [![Bronze](https://img.shields.io/badge/Bronze%20Layer-Complete-success?style=flat-square)]()
-[![Silver](https://img.shields.io/badge/Silver%20Layer-In%20Progress-yellow?style=flat-square)]()
+[![Silver](https://img.shields.io/badge/Silver%20Layer-Customers%20%26%20Accounts%20Complete-yellow?style=flat-square)]()
 [![Gold](https://img.shields.io/badge/Gold%20Layer-Pending-lightgrey?style=flat-square)]()
 [![Dataset](https://img.shields.io/badge/Dataset-GitHub%20Hosted-black?style=flat-square&logo=github)](https://github.com/inhamo/Datasets-Advanced-2026)
 
@@ -196,7 +198,18 @@ keystone_banking_data  (Workspace)
 │       ├── bronze_eml_manifest
 │       └── bronze_ingest_control   ← SHA-based change tracking
 │
-├── lh_silver_banking_data        Lakehouse (Silver — In Progress)
+├── 200_001_transform_customers_silver   Notebook — Silver customers (dim_customers_individual, dim_customers_business)
+├── 200_002_transform_accounts_silver    Notebook — Silver accounts (dim_accounts)
+│
+├── lh_silver_banking_data        Lakehouse
+│   └── Tables/
+│       ├── dim_customers_individual     ← 80,996 deduplicated individual customers
+│       ├── dim_customers_business       ← Business customers (separate schema)
+│       ├── dim_accounts                 ← 109,841 accounts (CDC-aware merge)
+│       └── control/
+│           ├── batch_watermark          ← High-water mark per pipeline
+│           └── silver_audit_log         ← Insert/update counts per batch
+│
 └── lh_Demo                       Sandbox lakehouse
 ```
 
@@ -295,7 +308,7 @@ transaction_monthly_aggregates
 | Lakehouse | `lh_[layer]_[domain]` | `lh_bronze_banking_data` |
 | Notebook | `[phase]_[seq]_[action]_[domain]` | `100_001_ingest_banking_data` |
 | Pipeline | `pl_[action]_[target]_[layer]` | `pl_ingest_banking_bronze` |
-| Dataflow Gen2 | `df_[action]_[layer]_[data]` | `df_transform_silver_accounts` |
+| Dataflow Gen2 | `dfg2_[action]_[layer]_[data]` | `dfg2_transform_silver_accounts` |
 | Stored Procedure | `pcd_[action]_[target]_[layer]` | `pcd_merge_dim_customer_silver` |
 
 ---
@@ -324,10 +337,15 @@ transaction_monthly_aggregates
 
 **Silver — Business Rule Enforcement**
 - Explicit schema with enforced types (no `inferSchema`)
-- Null handling: required fields must be non-null
-- Deduplication on natural keys
-- Referential integrity between entities
-- SCD Type 2 tracking (`valid_from`, `valid_to`, `is_current`) on slowly changing dimensions
+- Null classification: required / conditionally null / optional — logged per field
+- Deduplication on natural keys (window function ordered by year → month → `_ingest_timestamp`)
+- CDC-aware merge for accounts (`cdc_op_hint` I/U resolved via `record_last_updated_at`)
+- Delta MERGE (upsert) — no full overwrites; inserts and updates tracked separately
+- High-water mark (`control.batch_watermark`) — incremental load on subsequent runs
+- Audit log (`control.silver_audit_log`) — rows processed/inserted/updated per batch
+- Referential integrity check — `customer_id` in `dim_accounts` validated against `dim_customers`
+- Derived segmentation columns: `age_band`, `income_band`, `kyc_risk_tier`, `is_high_risk`, `customer_segment`, `tenure_band`, `account_age_band`, `tier_label`
+- Data quality flags: `is_valid_email`, `id_dob_match`, `is_duplicate_email`, `primary_account_violation`, `card_expiring_soon`, `onboarding_doc_score`
 
 **Gold — Consistency & Accuracy**
 - Cross-domain join consistency validated
@@ -377,6 +395,26 @@ Last SHA   : a3f1bc7...   ← match
 
 If new files have been pushed to GitHub, the SHA will differ and a full re-clone runs automatically.
 
+### Silver Execution (after Bronze)
+
+Run notebooks in order against `lh_silver_banking_data`:
+```
+3. 200_001_transform_customers_silver   (~10 min, first run full load)
+4. 200_002_transform_accounts_silver    (~8 min, first run full load)
+```
+
+Subsequent runs are incremental — only records newer than the last `batch_watermark` are processed. The watermark is updated automatically on each successful run.
+
+### Expected Silver Output
+
+```
+✅  dim_customers_individual   ~80,996 rows (deduplicated individuals)
+✅  dim_customers_business     ~3,426 rows  (deduplicated businesses)
+✅  dim_accounts               ~109,841 rows (CDC-resolved)
+✅  control.batch_watermark    audit trail per pipeline
+✅  control.silver_audit_log   insert/update counts per batch
+```
+
 ### Expected Bronze Output
 
 ```
@@ -406,11 +444,18 @@ If new files have been pushed to GitHub, the SHA will differ and a full re-clone
 - Idempotent pipeline with expected-table validation
 
 ### Phase 2 — Silver Transformation *(In Progress)*
-- Explicit schema enforcement per entity
-- SCD Type 2 implementation for customer and account dimensions
-- Deduplication and null handling
-- Referential integrity validation
-- Silver lakehouses for each domain
+**Complete:**
+- `dim_customers_individual` — schema enforcement, dedup, derived columns (`age_band`, `income_band`, `kyc_risk_tier`, `customer_segment`, `tenure_band`, surrogate key `customer_sk`)
+- `dim_customers_business` — separate schema, business-specific fields only
+- `dim_accounts` — CDC-aware merge, derived columns (`account_age_band`, `tier_label`, `has_overdraft`, `multi_account_flag`, `approval_lag_days`, `card_expiring_soon`)
+- `control.batch_watermark` + `control.silver_audit_log` — incremental load + full audit trail
+- Email validation, SA ID cross-validation, duplicate email detection, primary account violation flag
+
+**Remaining:**
+- `dim_transactions` — fact table for transaction behaviour
+- `dim_loans` + `dim_loan_participations`
+- `bridge_customer_account` — many-to-many relationship table
+- `dim_accounts_status_history` — SCD2 from `status_events_json`
 
 ### Phase 3 — Gold & Reporting *(Pending)*
 - Dimensional fact/dim models
@@ -430,7 +475,6 @@ If new files have been pushed to GitHub, the SHA will differ and a full re-clone
 | Schema drift across months (Parquet) | High | Medium | `read_reconciled()` casts conflicting columns to STRING; logged per entity |
 | `RAW_DIR` accumulates stale files across runs | Low | Low | Add `shutil.rmtree(RAW_DIR)` before `copytree` to fully reset (recommended) |
 | Git not available in Fabric runtime | Very Low | High | Verified available by default; `subprocess.run(["git"...])` confirmed working |
-| **2020 data gap (months 01–05)** | Confirmed | Medium | DQ-BRONZE-001: `account_limits_history`, `account_product_enrollments`, `account_signatories`, `account_status_events`, and `accounts` have no data for 2020 months 01–05. Source repo serves empty parquet shells. Months 06–12 present. Logged in `bronze_dq_gap_manifest`. Silver handles missing partitions gracefully. |
 
 ---
 
@@ -456,13 +500,6 @@ def with_bronze_meta(df):
 - **Schema conflicts in Parquet:** Some entities have type-inconsistent columns across months (e.g., `account_id` as `int` in 2019 and `string` in 2021). These are automatically cast to `STRING` in Bronze and flagged in the run log. Silver enforces the authoritative type.
 - **LFS files:** `transactions.jsonl` files are Git LFS pointers. The notebook detects these via a header sniff and hydrates them via direct HTTP before ingestion.
 - **CSV filenames carry no date:** The `year`/`month` partition columns are derived entirely from the folder path (`/2019/01/customer_communications/...`), not the filename.
-- **2020 data gap (DQ-BRONZE-001):** `account_limits_history`, `account_product_enrollments`, 
-  `account_signatories`, `account_status_events`, and `accounts` contain no data for 2020 months 
-  01–05. The source GitHub repo serves valid PAR1 parquet headers with `"columns": []` — empty 
-  shells, not LFS pointers. Confirmed by `000_DQ_2020_data_gap_investigation` notebook. 
-  Months 06–12 of 2020 are present and ingested normally. A `bronze_dq_gap_manifest` Delta 
-  table records all 24 affected files for Silver/Gold reference. Any year-over-year analytics 
-  comparing 2019 vs 2020 for these entities should exclude months 01–05 from 2020.
 
 ### C. Repo Structure (Source Dataset)
 
@@ -484,10 +521,55 @@ Datasets-Advanced-2026/
     └── 2025/ ...
 ```
 
+### E. Silver Derived Columns Reference
+
+**`dim_customers_individual`**
+
+| Column | Description |
+|---|---|
+| `customer_sk` | Surrogate key via `xxhash64(customer_id)` |
+| `age` | Years from `birth_date` to today |
+| `age_band` | 18-24 / 25-34 / 35-44 / 45-54 / 55-64 / 65+ |
+| `income_band` | Low / Lower-Middle / Middle / Upper-Middle / High |
+| `kyc_risk_tier` | Low / Medium / High / Critical (from `risk_score`) |
+| `is_high_risk` | True if PEP, sanctioned country, or Critical risk score |
+| `is_foreign_national` | True if `citizenship` ≠ ZA |
+| `passport_valid` | True if `expiry_date` > today (Passport holders only) |
+| `visa_valid` | True if `visa_expiry_date` > today |
+| `customer_segment` | Affluent / Mass Market / Emerging / Business / SME / Corporate |
+| `customer_tenure_years` | Years since first appearance in source data |
+| `tenure_band` | New / Growing / Established / Loyal |
+| `completeness_score` | 0–6 count of non-null contact/identity fields |
+| `segmentation_ready` | True if minimum fields for segmentation are present |
+| `is_valid_email` | Regex validation of email format |
+| `phone_country_code` | Extracted from `phone_number` prefix (ZA/KE/LS/ZW/OTHER) |
+| `id_dob_match` | SA ID cross-validation: first 6 digits must match `birth_date` |
+| `is_duplicate_email` | True if same email appears on more than one customer |
+
+**`dim_accounts`**
+
+| Column | Description |
+|---|---|
+| `account_sk` | Surrogate key via `xxhash64(account_id)` |
+| `account_age_days` | Days from `opening_date` to today |
+| `account_age_band` | New / Recent / Established / Mature |
+| `is_active` / `is_inactive` / `is_at_risk` | Derived from `account_status` |
+| `tier_label` | Human-readable tier description |
+| `has_overdraft` / `has_credit_card` | Feature flags from limit columns |
+| `is_foreign_currency` | True if `currency` ∈ {USD, EUR} |
+| `is_joint_account` / `is_business_account` | Type flags |
+| `card_valid` / `card_category` | Card expiry status + credit/debit classification |
+| `card_expiring_soon` | True if card expires within 90 days |
+| `onboarding_doc_score` | 0–7 count of onboarding documents provided |
+| `days_since_status_change` | Days since account status last changed |
+| `approval_lag_days` | `approval_date` − `opening_date` |
+| `multi_account_flag` | True if customer holds more than one account |
+| `primary_account_violation` | True if customer has more than one primary account |
+
 ### D. Useful Spark SQL Snippets
 
 ```sql
--- Check all Bronze tables and row counts
+-- Bronze: check all tables and row counts
 SHOW TABLES IN bronze;
 
 -- Verify partition coverage for transactions
@@ -500,6 +582,35 @@ ORDER BY year, month;
 SELECT _commit_sha, COUNT(*) as rows
 FROM bronze.bronze_accounts
 GROUP BY _commit_sha;
+```
+
+```sql
+-- Silver: check watermark history per pipeline
+SELECT pipeline_name, watermark_value, rows_processed, rows_inserted, rows_updated, status
+FROM control.batch_watermark
+ORDER BY processed_timestamp DESC;
+
+-- Silver: customer segment distribution
+SELECT customer_segment, kyc_risk_tier, COUNT(*) as customers
+FROM dim_customers_individual
+GROUP BY customer_segment, kyc_risk_tier
+ORDER BY customers DESC;
+
+-- Silver: accounts per customer
+SELECT n_accounts, COUNT(*) as n_customers
+FROM (
+  SELECT customer_id, COUNT(*) as n_accounts
+  FROM dim_accounts
+  GROUP BY customer_id
+)
+GROUP BY n_accounts ORDER BY n_accounts;
+
+-- Silver: primary account violation check
+SELECT customer_id, COUNT(*) as primary_count
+FROM dim_accounts
+WHERE is_primary_account = true
+GROUP BY customer_id
+HAVING COUNT(*) > 1;
 ```
 
 ---
