@@ -295,7 +295,7 @@ transaction_monthly_aggregates
 | Lakehouse | `lh_[layer]_[domain]` | `lh_bronze_banking_data` |
 | Notebook | `[phase]_[seq]_[action]_[domain]` | `100_001_ingest_banking_data` |
 | Pipeline | `pl_[action]_[target]_[layer]` | `pl_ingest_banking_bronze` |
-| Dataflow Gen2 | `dfg2_[action]_[layer]_[data]` | `dfg2_transform_silver_accounts` |
+| Dataflow Gen2 | `df_[action]_[layer]_[data]` | `df_transform_silver_accounts` |
 | Stored Procedure | `pcd_[action]_[target]_[layer]` | `pcd_merge_dim_customer_silver` |
 
 ---
