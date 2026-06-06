@@ -89,7 +89,7 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Vincent Chitsike | vincent@takueinno.onmicrosoft.com | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
 | Nomusa Lembede | nomusa@takueinno.onmicrosoft.com | Analytics Engineer (Team Lead) | Analytics | Pipelines, ingestion, storage, transformations |
 | Innocent Nhamo | takueinno@takueinno.onmicrosoft.com | Data Analyst | Analytics |  Reports, dashboards, KPIs, analysis, governance |
-| Fulufhelo Shavhani | fulufhelo@takueinno.onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, machine learning |
+| Fulufhelo Shavhani | fulufhelo@takueinnogmail.onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, machine learning |
 | Tebatso Mamabolo (/θvatso) | tebatso@takueinno.onmicrosoft.com | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
 | Tebogo Lesedi | tebogo@takueinno.onmicrosoft.com | ML Ops | Data | Reports, dashboards, KPIs, analysis |
 | Philisiwe Msibi | philisi@takueinno.onmicrosoft.com | Data Engineer| Data | Pipelines, ingestion, storage, transformations |
