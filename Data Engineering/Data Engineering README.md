@@ -36,7 +36,7 @@ The platform follows a **Medallion Architecture** (Bronze → Silver → Gold), 
 
 **Key Goals:**
 - Build a durable, partitioned Bronze landing layer from a multi-format dataset (~14,000 files)
-- Apply Silver-layer transformations: schema enforcement, deduplication, SCD Type 2 tracking
+- Apply Silver-layer transformations: schema enforcement, deduplication, PII masking, SCD Type 2 tracking
 - Expose Gold-layer aggregations for reporting and analytics
 - Demonstrate idempotent, reproducible pipeline design on a zero-cost platform
 
@@ -59,13 +59,15 @@ The platform follows a **Medallion Architecture** (Bronze → Silver → Gold), 
 │   • Metadata: _ingest_timestamp, _batch_id, _commit_sha         │
 │   • Partitioned by year / month (path-derived)                  │
 │   • PDF/EML: raw bytes on Files + manifest Delta tables         │
+│   • PII retained in raw form (restricted access)                │
 └───────────────────────────┬─────────────────────────────────────┘
-                            │  PySpark transformations
+                            │  PySpark transformations + PII masking
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                      SILVER LAYER                               │
 │   • Schema enforcement & explicit typing                        │
 │   • Deduplication & null handling                               │
+│   • PII masked — first safe layer for downstream consumers      │
 │   • SCD Type 2 for slowly changing dimensions                   │
 │   • Business rule validation & referential integrity            │
 └───────────────────────────┬─────────────────────────────────────┘
@@ -76,6 +78,7 @@ The platform follows a **Medallion Architecture** (Bronze → Silver → Gold), 
 │   • Dimensional models (fact + dim tables)                      │
 │   • Business KPIs and reporting aggregates                      │
 │   • Power BI / ML-ready semantic layer                          │
+│   • All data already masked from Silver                         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -203,9 +206,9 @@ keystone_banking_data  (Workspace)
 │
 ├── lh_silver_banking_data        Lakehouse
 │   └── Tables/
-│       ├── dim_customers_individual     ← 80,996 deduplicated individual customers
-│       ├── dim_customers_business       ← Business customers (separate schema)
-│       ├── dim_accounts                 ← 109,841 accounts (CDC-aware merge)
+│       ├── dim_customers_individual     ← 80,996 deduplicated individual customers (PII masked)
+│       ├── dim_customers_business       ← Business customers (separate schema, PII masked)
+│       ├── dim_accounts                 ← 109,841 accounts (CDC-aware merge, PII masked)
 │       └── control/
 │           ├── batch_watermark          ← High-water mark per pipeline
 │           └── silver_audit_log         ← Insert/update counts per batch
@@ -300,30 +303,58 @@ transaction_monthly_aggregates
 
 ---
 
-### Fabric Item Naming
-
-| Item Type | Convention | Example |
-|---|---|---|
-| Workspace | `wk_[project]_[domain]` | `wk_keystone_banking` |
-| Lakehouse | `lh_[layer]_[domain]` | `lh_bronze_banking_data` |
-| Notebook | `[phase]_[seq]_[action]_[domain]` | `100_001_ingest_banking_data` |
-| Pipeline | `pl_[action]_[target]_[layer]` | `pl_ingest_banking_bronze` |
-| Dataflow Gen2 | `dfg2_[action]_[layer]_[data]` | `dfg2_transform_silver_accounts` |
-| Stored Procedure | `pcd_[action]_[target]_[layer]` | `pcd_merge_dim_customer_silver` |
-
----
-
 ## 8. Data Governance & Quality Framework
 
 ### Data Classification
 
 | Classification | Examples | Handling |
 |---|---|---|
-| PII / Confidential | Customer names, account numbers, balances | Masked in Gold; access-controlled |
+| PII / Confidential | Customer names, account numbers, balances | Masked in Silver; Bronze access-controlled |
 | Internal | Operational metrics, batch metadata | Standard access |
 | Public | Aggregated reports, anonymized summaries | Unrestricted |
 
 > **Note:** The dataset is synthetic. In a production context, all customer-linked fields would be classified as PII and subject to retention policies and POPIA/GDPR compliance.
+
+---
+
+### PII Masking Strategy
+
+Data masking is applied at the **Silver layer** — the first layer downstream consumers touch. Bronze retains raw values (restricted access). Gold operates entirely on already-masked Silver data.
+
+**Why Silver, not Gold?**
+Masking in Silver ensures that *every* Gold table is safe by default, regardless of how many Gold notebooks are written. If masking were deferred to Gold, each new Gold notebook would need to remember to re-apply it — a risk that grows as the project scales.
+
+**Masking is deterministic** — the same input always produces the same masked output. This is achieved using SHA-256 hashing with a project-level salt (`MASK_SALT`, defined in `000_config`). Deterministic masking means:
+- Joins across tables still work (e.g. a hashed `id_number` in customers correlates with the same hash in an audit table)
+- Duplicate detection still works (two customers with identical emails hash identically — `is_duplicate_email` remains accurate)
+- Results are fully reproducible across pipeline runs
+
+**Masked fields by entity:**
+
+`dim_customers_individual` / `dim_customers_business`:
+
+| Column | Technique | Rationale |
+|---|---|---|
+| `id_number` | Deterministic hash (SHA-256 + salt) | Most sensitive field — SA ID encodes DOB, gender, citizenship. Used as join key in KYC systems so hash must be consistent |
+| `tax_id_number` | Deterministic hash (SHA-256 + salt) | Sensitive identifier; not a pipeline join key |
+| `email` | Domain-preserving hash | Local part hashed, domain retained — analytically useful (gmail vs corporate) without exposing the individual |
+| `phone_number` | Partial mask — keep prefix + last 3 digits | Country code retained for `phone_country_code` derived column; subscriber number removed |
+| `residential_address` | Full hash | Free-text field; no structure worth preserving; not a join key |
+| `commercial_address` | Full hash | Same as above |
+| `next_of_kin` | Full hash | Free-text name field; not used downstream |
+
+`dim_accounts`:
+
+| Column | Technique | Rationale |
+|---|---|---|
+| `account_number` | Partial mask — last 4 digits visible (`****NNNN`) | Standard banking convention; not a join key |
+| `card_number` | Deterministic hash (SHA-256 + salt) | Card network already captured in `card_type` / `card_category` derived columns |
+| `iban` | Deterministic hash (SHA-256 + salt) | Not a join key; no structure worth preserving |
+
+**Ordering note for customers notebook:**
+`id_dob_match` (SA ID cross-validation) must be computed *before* masking runs, because it reads the first 6 characters of the raw `id_number` to validate the embedded date-of-birth. Once hashed, those characters are gone. The notebook explicitly computes `id_dob_match` on `typed` (pre-mask), then applies masking, then runs all remaining derived columns.
+
+---
 
 ### Quality Gates by Layer
 
@@ -340,6 +371,7 @@ transaction_monthly_aggregates
 - Null classification: required / conditionally null / optional — logged per field
 - Deduplication on natural keys (window function ordered by year → month → `_ingest_timestamp`)
 - CDC-aware merge for accounts (`cdc_op_hint` I/U resolved via `record_last_updated_at`)
+- **PII masking applied before derived columns** (see masking strategy above)
 - Delta MERGE (upsert) — no full overwrites; inserts and updates tracked separately
 - High-water mark (`control.batch_watermark`) — incremental load on subsequent runs
 - Audit log (`control.silver_audit_log`) — rows processed/inserted/updated per batch
@@ -372,7 +404,8 @@ transaction_monthly_aggregates
 {
   "github_url":    "https://github.com/inhamo/Datasets-Advanced-2026.git",
   "raw_path":      "Files/raw",
-  "bronze_schema": "bronze"
+  "bronze_schema": "bronze",
+  "mask_salt":     "keystone_2026"
 }
 ```
 
@@ -408,9 +441,9 @@ Subsequent runs are incremental — only records newer than the last `batch_wate
 ### Expected Silver Output
 
 ```
-✅  dim_customers_individual   ~80,996 rows (deduplicated individuals)
-✅  dim_customers_business     ~3,426 rows  (deduplicated businesses)
-✅  dim_accounts               ~109,841 rows (CDC-resolved)
+✅  dim_customers_individual   ~80,996 rows (deduplicated individuals, PII masked)
+✅  dim_customers_business     ~3,426 rows  (deduplicated businesses, PII masked)
+✅  dim_accounts               ~109,841 rows (CDC-resolved, PII masked)
 ✅  control.batch_watermark    audit trail per pipeline
 ✅  control.silver_audit_log   insert/update counts per batch
 ```
@@ -445,9 +478,9 @@ Subsequent runs are incremental — only records newer than the last `batch_wate
 
 ### Phase 2 — Silver Transformation *(In Progress)*
 **Complete:**
-- `dim_customers_individual` — schema enforcement, dedup, derived columns (`age_band`, `income_band`, `kyc_risk_tier`, `customer_segment`, `tenure_band`, surrogate key `customer_sk`)
-- `dim_customers_business` — separate schema, business-specific fields only
-- `dim_accounts` — CDC-aware merge, derived columns (`account_age_band`, `tier_label`, `has_overdraft`, `multi_account_flag`, `approval_lag_days`, `card_expiring_soon`)
+- `dim_customers_individual` — schema enforcement, dedup, PII masking, derived columns (`age_band`, `income_band`, `kyc_risk_tier`, `customer_segment`, `tenure_band`, surrogate key `customer_sk`)
+- `dim_customers_business` — separate schema, business-specific fields only, PII masked
+- `dim_accounts` — CDC-aware merge, PII masking, derived columns (`account_age_band`, `tier_label`, `has_overdraft`, `multi_account_flag`, `approval_lag_days`, `card_expiring_soon`)
 - `control.batch_watermark` + `control.silver_audit_log` — incremental load + full audit trail
 - Email validation, SA ID cross-validation, duplicate email detection, primary account violation flag
 
@@ -475,6 +508,7 @@ Subsequent runs are incremental — only records newer than the last `batch_wate
 | Schema drift across months (Parquet) | High | Medium | `read_reconciled()` casts conflicting columns to STRING; logged per entity |
 | `RAW_DIR` accumulates stale files across runs | Low | Low | Add `shutil.rmtree(RAW_DIR)` before `copytree` to fully reset (recommended) |
 | Git not available in Fabric runtime | Very Low | High | Verified available by default; `subprocess.run(["git"...])` confirmed working |
+| Masking salt lost or changed between runs | Low | High | Salt defined in `000_config`; changing it invalidates all existing hashes — treat as immutable once Silver is populated |
 
 ---
 
@@ -520,51 +554,6 @@ Datasets-Advanced-2026/
     │   └── 02/ ...
     └── 2025/ ...
 ```
-
-### E. Silver Derived Columns Reference
-
-**`dim_customers_individual`**
-
-| Column | Description |
-|---|---|
-| `customer_sk` | Surrogate key via `xxhash64(customer_id)` |
-| `age` | Years from `birth_date` to today |
-| `age_band` | 18-24 / 25-34 / 35-44 / 45-54 / 55-64 / 65+ |
-| `income_band` | Low / Lower-Middle / Middle / Upper-Middle / High |
-| `kyc_risk_tier` | Low / Medium / High / Critical (from `risk_score`) |
-| `is_high_risk` | True if PEP, sanctioned country, or Critical risk score |
-| `is_foreign_national` | True if `citizenship` ≠ ZA |
-| `passport_valid` | True if `expiry_date` > today (Passport holders only) |
-| `visa_valid` | True if `visa_expiry_date` > today |
-| `customer_segment` | Affluent / Mass Market / Emerging / Business / SME / Corporate |
-| `customer_tenure_years` | Years since first appearance in source data |
-| `tenure_band` | New / Growing / Established / Loyal |
-| `completeness_score` | 0–6 count of non-null contact/identity fields |
-| `segmentation_ready` | True if minimum fields for segmentation are present |
-| `is_valid_email` | Regex validation of email format |
-| `phone_country_code` | Extracted from `phone_number` prefix (ZA/KE/LS/ZW/OTHER) |
-| `id_dob_match` | SA ID cross-validation: first 6 digits must match `birth_date` |
-| `is_duplicate_email` | True if same email appears on more than one customer |
-
-**`dim_accounts`**
-
-| Column | Description |
-|---|---|
-| `account_sk` | Surrogate key via `xxhash64(account_id)` |
-| `account_age_days` | Days from `opening_date` to today |
-| `account_age_band` | New / Recent / Established / Mature |
-| `is_active` / `is_inactive` / `is_at_risk` | Derived from `account_status` |
-| `tier_label` | Human-readable tier description |
-| `has_overdraft` / `has_credit_card` | Feature flags from limit columns |
-| `is_foreign_currency` | True if `currency` ∈ {USD, EUR} |
-| `is_joint_account` / `is_business_account` | Type flags |
-| `card_valid` / `card_category` | Card expiry status + credit/debit classification |
-| `card_expiring_soon` | True if card expires within 90 days |
-| `onboarding_doc_score` | 0–7 count of onboarding documents provided |
-| `days_since_status_change` | Days since account status last changed |
-| `approval_lag_days` | `approval_date` − `opening_date` |
-| `multi_account_flag` | True if customer holds more than one account |
-| `primary_account_violation` | True if customer has more than one primary account |
 
 ### D. Useful Spark SQL Snippets
 
@@ -612,6 +601,51 @@ WHERE is_primary_account = true
 GROUP BY customer_id
 HAVING COUNT(*) > 1;
 ```
+
+### E. Silver Derived Columns Reference
+
+**`dim_customers_individual`**
+
+| Column | Description |
+|---|---|
+| `customer_sk` | Surrogate key via `xxhash64(customer_id)` |
+| `age` | Years from `birth_date` to today |
+| `age_band` | 18-24 / 25-34 / 35-44 / 45-54 / 55-64 / 65+ |
+| `income_band` | Low / Lower-Middle / Middle / Upper-Middle / High |
+| `kyc_risk_tier` | Low / Medium / High / Critical (from `risk_score`) |
+| `is_high_risk` | True if PEP, sanctioned country, or Critical risk score |
+| `is_foreign_national` | True if `citizenship` ≠ ZA |
+| `passport_valid` | True if `expiry_date` > today (Passport holders only) |
+| `visa_valid` | True if `visa_expiry_date` > today |
+| `customer_segment` | Affluent / Mass Market / Emerging / Business / SME / Corporate |
+| `customer_tenure_years` | Years since first appearance in source data |
+| `tenure_band` | New / Growing / Established / Loyal |
+| `completeness_score` | 0–6 count of non-null contact/identity fields |
+| `segmentation_ready` | True if minimum fields for segmentation are present |
+| `is_valid_email` | Regex validation of masked email format |
+| `phone_country_code` | Extracted from masked `phone_number` prefix (ZA/KE/LS/ZW/OTHER) — partial mask preserves prefix |
+| `id_dob_match` | SA ID cross-validation: computed on raw `id_number` **before** masking |
+| `is_duplicate_email` | True if same email appears on more than one customer — works on masked value (deterministic hash) |
+
+**`dim_accounts`**
+
+| Column | Description |
+|---|---|
+| `account_sk` | Surrogate key via `xxhash64(account_id)` |
+| `account_age_days` | Days from `opening_date` to today |
+| `account_age_band` | New / Recent / Established / Mature |
+| `is_active` / `is_inactive` / `is_at_risk` | Derived from `account_status` |
+| `tier_label` | Human-readable tier description |
+| `has_overdraft` / `has_credit_card` | Feature flags from limit columns |
+| `is_foreign_currency` | True if `currency` ∈ {USD, EUR} |
+| `is_joint_account` / `is_business_account` | Type flags |
+| `card_valid` / `card_category` | Card expiry status + credit/debit classification |
+| `card_expiring_soon` | True if card expires within 90 days |
+| `onboarding_doc_score` | 0–7 count of onboarding documents provided |
+| `days_since_status_change` | Days since account status last changed |
+| `approval_lag_days` | `approval_date` − `opening_date` |
+| `multi_account_flag` | True if customer holds more than one account |
+| `primary_account_violation` | True if customer has more than one primary account |
 
 ---
 
