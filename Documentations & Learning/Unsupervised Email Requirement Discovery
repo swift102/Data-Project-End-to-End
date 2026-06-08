@@ -1,0 +1,90 @@
+ Banking Operations: Unsupervised Email Requirement Discovery
+
+
+​ **Project Overview & Business Strategy**
+
+
+​In high-volume banking operations, client queues are continuously saturated with unstructured email communications. Processing these items manually or forcing them into rigid, pre-defined classification categories restricts operational visibility, creating massive blind spots for emerging transactional patterns or structural operational shifts.
+​This platform delivers an end-to-end MLOps pipeline orchestrated within Microsoft Fabric to ingest, clean, transform, and map raw email files. Crucially, this is an unsupervised discovery system, not a traditional classifier:
+​No Predefined Labels: The algorithm surfaces themes natively without human data-annotation costs.
+​No Fixed Output Schemas: The data defines the categories dynamically.
+​Proportional Theme Generation: The engine proposes candidate clusters while a Human-in-the-Loop audit isolates real operational requirements from systemic data artifacts.
+
+
+
+Core Infrastructure & Medallion Design
+
+
+​The broader data platform relies on a decoupled Medallion Architecture to guarantee data lineage, clean transformation paths, and reliable downstream machine learning servings.
+
+Architectural Logic Flow
+
+​The  internal mechanics of the discovery engine are split into four clear macro-stages, ranging from infrastructure provisioning to final distributed lakehouse persistence.
+Step-by-Step Technical Execution
+​Stage 0: Environment Initialization & Configuration
+
+
+​0. Install Dependencies
+​Executes inline library setups (transformers==4.44.2, sentence-transformers==3.0.1, bertopic==0.16.4).
+​[!WARNING]
+
+Fabric Kernel Restart Quirk: Executing %pip install triggers an automatic, single restart of the underlying PySpark compute kernel. This clears all transient in-memory variables. This cell must be executed independently first before initializing any subsequent configuration matrices.
+
+​1. CONFIG — System Control Knobs
+​Houses all global execution variables. Re-running this standalone block immediately after a kernel flush restores structural parameters, establishing schema variables, target Silver OneLake paths, and model hyperparameters to avoid downstream NameError blockages.
+​Stage 1: Ingestion Engine
+
+​2. Load from Fabric Lakehouse Files
+​Parses structural MIME raw contents out of .eml formats staged in the default attached Bronze Lakehouse.
+​Audit Footprint: Successfully ingests 879 emails spread across 80 historical monthly folders.
+​Load-Bearing Glob Filtering: Employs an explicit *.eml pattern check. This deliberately skips matching .pdf twins generated during platform exports, blocking data duplication before processing occurs. Builds a conformed Pandas DataFrame featuring message_id, subject, and body.
+​
+
+Stage 2: NLP & Unsupervised Modeling
+
+
+​3. Clean (Text Preprocessing)
+​Normalizes the target corpus. Strips recurring conversation logs, forward headers, employee signature modules, and corporate legal disclaimers. This stage defines final output fidelity; the model never reads raw email bodies, only what survives this block.
+​
+4. Filter Noise
+​Programmatically drops auto-replies, "Out of Office" system alerts, and empty notifications. Since clustering models lack structural context, dropping non-signal text early prevents the algorithm from forming highly confident, completely non-actionable clusters.
+​
+5. Embed
+​Transforms normalized text records into dense vector embeddings using pre-trained language transformer architectures to map semantic similarities.
+​
+6. Cluster with BERTopic
+​Utilizes a layered sequence of UMAP for geometric dimensionality reduction, HDBSCAN for spatial density clustering, and c-TF-IDF for keyword extraction.
+​Data-Driven Clustering: Topic selection is entirely data-driven (the system does not force a synthetic, fixed K cluster count).
+​Honest Outlier Mapping: Scattered or ambiguous data points organically fallback into the Topic -1 outlier bucket. A large -1 bucket reflects the authentic heterogeneity of HDBSCAN density clustering, not a processing error.
+​
+
+Stage 3: Storage & Rigorous Validation
+
+
+​7. INSPECT (Human-in-the-Loop Audit)
+​Keywords represent mathematical weights, not absolute operational business definitions. This interactive layer allows human auditors to check representative documents per topic group, differentiate authentic business requirements from unstripped templates, and map concrete enterprise names to the discovered clusters.
+​
+8. (Optional) Reassign Outliers
+​Provides a functional toggle to algorithmically sweep scattered outlier data points into their nearest geometric neighbors. While this expands data coverage metrics, it introduces artificial certainty; a strict structural tracking flag is preserved so downstream apps can differentiate high-confidence clusters from forced assignments.
+​
+9. Cross-Lakehouse Write to Silver
+​Because the default active catalog path maps to the Bronze environment, executing standard saveAsTable("silver...") commands fails to clear lakehouse boundaries. The pipeline bypasses this by routing Delta formats directly to the destination Silver Lakehouse (lh_silver_banking_data) via its explicit OneLake abfss:// URI.
+​Array Flattening Logic: get_topic_info() contains array-typed lists (Representation, Representative_Docs) that violate PySpark tabular data creation rules. The module automatically reconstructs the export summary dataframes using scalar structures exclusively.
+​Delta Architecture Validation: Writes utilize explicit Delta parameters over traditional flat Parquet files, establishing full ACID transaction safety (_delta_log/). State integrity is validated via standard DESCRIBE DETAIL instructions.
+​
+
+Production Rigor & Validation Checklist
+
+​To maintain structural control and prevent model hallucinations, the following verification checklist must be monitored during automated executions:
+
+## Topic Modeling & Clustering Audit Matrix
+
+| Audit Domain | Specific Risk Flag | Corrective Action Script / Protocol |
+| :--- | :--- | :--- |
+| **Clustering Stability** | Rerunning identical configurations produces highly volatile, vanishing themes. | 1. Enforce a strict `RANDOM_STATE` seed across all pipeline iterations.<br>2. Isolate and rely **only** on stable clusters that persist across multiple runs. |
+| **Outlier Ratio Monitoring** | Total volume of data defaulting into the `Topic -1` outlier bucket exceeds **40–50%**. | 1. Acknowledge that the text data is too heterogeneous for current constraints.<br>2. **Loosen clustering density configurations** instead of just forcing outlier reassignment. |
+| **Language Leakage Check** | Similar user intents are being split into separate clusters due to localized dialects or language barriers. | 1. Verify if topics separate based on actual intent or language/dialect.<br>2. If language leakage is confirmed, **swap out the current feature extractor** for a dedicated Multilingual Transformer model. |
+| **Boilerplate Leakage Check** | Top clusters are dominated by unstripped email signatures, corporate legal disclaimers, or standard footer text. | 1. Monitor top clusters closely for institutional noise.<br>2. Update your `DISCLAIMER_PATTERNS` regular expressions.<br>3. **Re-run the pipeline from Stage 2** (Preprocessing). |
+| **Semantic Coherence Audit** | The three primary representative emails for a discovered topic do not share a clear, unified operational intent. | 1. Inspect the top 3 representative emails per topic.<br>2. If the cluster is a data artifact, remedy this by **increasing `MIN_TOPIC_SIZE`** or refining the core text-cleaning scripts. |
+
+> **Auditor Note:** The **40–50%** outlier boundary is a hard trigger. Exceeding this means the model is failing to generalize. Additionally, resolving boilerplate leakage requires a deterministic rollback to **Stage 2** preprocessing, which will invalidate downstream feature extraction states.
