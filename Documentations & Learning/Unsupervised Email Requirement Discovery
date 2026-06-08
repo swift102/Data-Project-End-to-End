@@ -1,7 +1,7 @@
  Banking Operations: Unsupervised Email Requirement Discovery
 
 
-​ **Project Overview & Business Strategy**
+​ Project Overview & Business Strategy
 
 
 ​In high-volume banking operations, client queues are continuously saturated with unstructured email communications. Processing these items manually or forcing them into rigid, pre-defined classification categories restricts operational visibility, creating massive blind spots for emerging transactional patterns or structural operational shifts.
@@ -22,6 +22,8 @@ Architectural Logic Flow
 ​The  internal mechanics of the discovery engine are split into four clear macro-stages, ranging from infrastructure provisioning to final distributed lakehouse persistence.
 Step-by-Step Technical Execution
 ​Stage 0: Environment Initialization & Configuration
+
+![Alt workflow](/mlops_project.png)
 
 
 ​0. Install Dependencies
