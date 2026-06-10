@@ -2,13 +2,14 @@
 # Conceptual layer -: 
 
 Domains:
-1. Marketing (Complaints / Customer Activity)
-2. AI/ML Compliance (Channel Movement Analysis) 
-3. Legal
+1. Customer and Account (Data Protection - Sensitive and Masking / Customer Activity)
+2. Product (Loans / Complaints / Channel Movement)
+3. Finance (Payment issues Bank or Customer) 
 4. Credit and loans (Loans / Repayment Stress Model)
-5. Product (Loans / Complaints / Channel Movement)
+5. Risk and Compliance (Fraud / Payments issue / Collection / COVID distruption)
 6. Sales and operations (Real account conversion** / WhatsApp & Chatbots)
-6. Finance (Payment issues Bank or Customer) 
-7. Risk and Compliance (Fraud / Payments issue / Collection / COVID distruption)
-8. Customer and Account (Data Protection - Sensitive and Masking / Customer Activity)
+6. Legal 
+7. AI/ML Compliance (Channel Movement Analysis)
+8. Marketing (Complaints / Customer Activity)
+
 
