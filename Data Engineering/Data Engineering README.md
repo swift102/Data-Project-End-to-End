@@ -384,6 +384,50 @@ Masking in Silver ensures that *every* Gold table is safe by default, regardless
 - Aggregation accuracy checks (sum reconciliation)
 - Row count variance alerts between Silver and Gold
 
+### Late-Arriving Data
+
+Late-arriving data refers to source files that were absent from the repository at the time
+of the original Bronze ingest and arrived in a subsequent reingest without triggering a
+full pipeline rerun.
+
+#### Known Instance: `initial_deposits.jsonl`
+
+`initial_deposits.jsonl` files (one per `year/month` partition) were not present in the
+source repo during the original Bronze ingest (`100_001`, batch `20260611T154040Z`).
+The files were subsequently added to the repo, landed in `bronze_raw` during a later
+reingest, but no Bronze Delta table was created for them at that time.
+
+**Impact without remediation:**
+- `fact_transaction` would be missing all account opening deposits
+- Per-account running balances and net flow calculations incorrect from day one
+- Any account lifecycle analysis starting from opening balance would be invalid
+
+**Remediation pattern — standalone backfill notebook:**
+
+Rather than rerunning the full Bronze ingest, a dedicated backfill notebook
+(`100_002_ingest_initial_deposits_bronze`) was created to handle this class of problem:
+
+1. Reads all `initial_deposits.jsonl` files recursively across all `{year}/{month}/` partitions
+2. Applies the same Bronze metadata columns (`_source_file`, `_batch_id`, `_ingest_timestamp`, `year`, `month`) as `100_001`
+3. Writes to a new Delta table `bronze.bronze_initial_deposits` using `OVERWRITE` mode (source is static — safe to rerun)
+4. Appends an entry to `bronze_ingest_audit` documenting the backfill batch and row count
+
+Silver `200_008` (transactions) was updated to union `bronze.bronze_initial_deposits`
+into the transactions DataFrame before `merge_silver()`, carrying an `is_initial_deposit`
+flag so the Gold layer and reporting consumers can include or exclude opening deposits
+explicitly.
+
+**Design decision — separate Bronze table, not merged into `bronze_transactions`:**
+The `terminal_id: BR-XXXXX-OPENING` marker on initial deposits indicates these are
+structurally distinct events, not standard transaction records. Merging them into
+`bronze_transactions` in Bronze would destroy that signal. The union happens in Silver,
+where business intent governs how they are treated.
+
+> **General pattern:** For any future late-arriving static source file, create a
+> dedicated `100_00X_ingest_[entity]_bronze` backfill notebook following this same
+> pattern. Do not rerun `100_001` — the SHA-based change detection will handle
+> genuinely new data; backfill notebooks handle structural gaps in the original ingest.
+
 ### DQ Metrics Tracked
 `Completeness` · `Accuracy` · `Consistency` · `Timeliness` · `Uniqueness`
 
@@ -546,7 +590,7 @@ Datasets-Advanced-2026/
     │   │   ├── accounts_2019_01.parquet
     │   │   ├── customers_2019_01.parquet
     │   │   ├── transactions.jsonl
-    │   │   ├── initial_deposits.jsonl
+    │   │   ├── initial_deposits.jsonl ← late-arriving; absent from original ingest (see §8)
     │   │   ├── customer_communications/
     │   │   │   └── communications.csv
     │   │   └── marketing_campaigns/
