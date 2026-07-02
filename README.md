@@ -84,16 +84,15 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 
 ### 3.1 People Resources
 
-| Name | Email | Role | Team / Department | Area of Inquiry |
-|---|---|---|---|---|
-| Vincent Chitsike | vincent@takueinno.onmicrosoft.com | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
-| Nomusa Lembede | nomusa@takueinno.onmicrosoft.com | Analytics Engineer (Team Lead) | Analytics | Pipelines, ingestion, storage, transformations |
-| Innocent Nhamo | takueinno@takueinno.onmicrosoft.com | Data Analyst | Analytics |  Reports, dashboards, KPIs, analysis, governance |
-| Fulufhelo Shavhani | fulufhelo@takueinnogmail.onmicrosoft.com | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, machine learning |
-| Tebatso Mamabolo (/θvatso) | tebatso@takueinno.onmicrosoft.com | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
-| Tebogo Lesedi | tebogo@takueinno.onmicrosoft.com | ML Ops | Data | Reports, dashboards, KPIs, analysis |
-| Philisiwe Msibi | philisi@takueinno.onmicrosoft.com | Data Engineer| Data | Pipelines, ingestion, storage, transformations |
-
+| Name | Role | Team / Department | Area of Inquiry |
+|---|---|---|---|
+| Vincent Chitsike | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
+| Nomusa Lembede | Analytics Engineer (Team Lead) | Analytics | Pipelines, ingestion, storage, transformations |
+| Innocent Nhamo | Data Analyst | Analytics | Reports, dashboards, KPIs, analysis, governance |
+| Fulufhelo Shavhani | ML Ops (Team Lead) | Data | Reports, dashboards, KPIs, machine learning |
+| Tebatso Mamabolo | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
+| Tebogo Lesedi | ML Ops | Data | Reports, dashboards, KPIs, analysis |
+| Philisiwe Msibi | Data Engineer | Data | Pipelines, ingestion, storage, transformations |
 ### 3.2 Technology Resources
 
 | Resource | Purpose |
