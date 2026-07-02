@@ -449,7 +449,7 @@ where business intent governs how they are treated.
   "github_url":    "https://github.com/inhamo/Datasets-Advanced-2026.git",
   "raw_path":      "Files/raw",
   "bronze_schema": "bronze",
-  "mask_salt":     "keystone_2026"
+  "mask_salt":     "<retrieved-from-config-not-shown>"
 }
 ```
 
