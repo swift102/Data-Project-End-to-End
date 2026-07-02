@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "MLExperiment",
+    "displayName": "email_requirement_discovery"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a0022731-9769-be35-4cc9-e5b58fee1403"
+  }
+}

@@ -1,0 +1,17 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["bronze_customer_communications_complaints","email_topic_summary"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+ref table bronze_customer_communications_complaints
+ref table DateTableTemplate_c810bc1a-6b4c-4b69-a73d-d8a5aa503bd8
+ref table LocalDateTable_01569840-398c-463b-9109-8fa6198985ea
+ref table email_topic_summary
+

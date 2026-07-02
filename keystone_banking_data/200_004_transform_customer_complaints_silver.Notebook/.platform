@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_004_transform_customer_complaints_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "26389d67-ea09-a9a3-4174-32361ded713e"
+  }
+}

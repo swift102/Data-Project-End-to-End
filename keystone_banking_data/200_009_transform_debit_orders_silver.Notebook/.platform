@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_009_transform_debit_orders_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f367288c-2003-acca-4c0f-5d82385682b7"
+  }
+}

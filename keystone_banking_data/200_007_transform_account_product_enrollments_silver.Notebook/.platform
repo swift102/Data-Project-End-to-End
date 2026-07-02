@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_007_transform_account_product_enrollments_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "80b81556-319f-b421-4497-517757740b8c"
+  }
+}

@@ -1,0 +1,371 @@
+table vw_customer_360_individual
+	lineageTag: 1acdad99-3a01-449b-9ff8-37273422e050
+	sourceLineageTag: [dbo].[vw_customer_360_individual]
+
+	column customer_id
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: c72f76dd-d2ab-4a8e-a7f8-cad552321556
+		sourceLineageTag: customer_id
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column birth_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 38ec450b-b995-4c20-9c01-20409b3600e2
+		sourceLineageTag: birth_date
+		summarizeBy: none
+		sourceColumn: birth_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: ee9d21d5-b5c8-4c4d-9ad0-38dfd807222b
+		sourceLineageTag: city
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column province
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4d390a0a-bd83-499c-a8c4-e864812fa401
+		sourceLineageTag: province
+		summarizeBy: none
+		sourceColumn: province
+
+		annotation SummarizationSetBy = Automatic
+
+	column nationality
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 402beabb-2828-42d3-943b-a97d0cac0343
+		sourceLineageTag: nationality
+		summarizeBy: none
+		sourceColumn: nationality
+
+		annotation SummarizationSetBy = Automatic
+
+	column citizenship
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 53c85ebf-685b-4765-856a-66feac107686
+		sourceLineageTag: citizenship
+		summarizeBy: none
+		sourceColumn: citizenship
+
+		annotation SummarizationSetBy = Automatic
+
+	column primary_citizenship
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4b8c70bf-54ff-480c-8ed5-cffd5c14c299
+		sourceLineageTag: primary_citizenship
+		summarizeBy: none
+		sourceColumn: primary_citizenship
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_dual_citizen
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 646224fb-7d31-4145-a89c-100e4a3095a8
+		sourceLineageTag: is_dual_citizen
+		summarizeBy: none
+		sourceColumn: is_dual_citizen
+
+		annotation SummarizationSetBy = Automatic
+
+	column risk_score
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 85594b43-681a-4e48-aa44-16f847806970
+		sourceLineageTag: risk_score
+		summarizeBy: sum
+		sourceColumn: risk_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column preferred_contact_method
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4e08858c-ac4b-4250-ba93-0465b2ab00fa
+		sourceLineageTag: preferred_contact_method
+		summarizeBy: none
+		sourceColumn: preferred_contact_method
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_pep
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 945b28f5-6a26-4fa8-b6f4-f0faa5c71299
+		sourceLineageTag: is_pep
+		summarizeBy: none
+		sourceColumn: is_pep
+
+		annotation SummarizationSetBy = Automatic
+
+	column expected_income
+		dataType: double
+		sourceProviderType: float
+		lineageTag: b84fc53e-0748-4077-978b-76b183ac8fdf
+		sourceLineageTag: expected_income
+		summarizeBy: sum
+		sourceColumn: expected_income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_opted_in_marketing
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 9ca1b327-86d4-4c67-addb-cd2f2f6e3530
+		sourceLineageTag: is_opted_in_marketing
+		summarizeBy: none
+		sourceColumn: is_opted_in_marketing
+
+		annotation SummarizationSetBy = Automatic
+
+	column number_of_accounts
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d493cf3d-be0d-4a67-a94c-653ef6e58197
+		sourceLineageTag: number_of_accounts
+		summarizeBy: sum
+		sourceColumn: number_of_accounts
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_account_opening_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: ba289cbb-7ff4-49d0-b8fa-bbc36d0cd132
+		sourceLineageTag: first_account_opening_date
+		summarizeBy: none
+		sourceColumn: first_account_opening_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column age_at_opening
+		dataType: int64
+		formatString: 0
+		sourceProviderType: numeric(18, 0)
+		lineageTag: e705dbbe-290e-4962-97b0-2baa16671208
+		sourceLineageTag: age_at_opening
+		summarizeBy: sum
+		sourceColumn: age_at_opening
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_overdraft
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f8f57cd2-0dce-4a70-af15-55e259656d04
+		sourceLineageTag: has_overdraft
+		summarizeBy: sum
+		sourceColumn: has_overdraft
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_credit_card
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 460c033f-5e7f-4387-a297-79e624043188
+		sourceLineageTag: has_credit_card
+		summarizeBy: sum
+		sourceColumn: has_credit_card
+
+		annotation SummarizationSetBy = Automatic
+
+	column number_of_active_months
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d4f7b30f-0599-4e5d-9046-c4c9ab5c4a4e
+		sourceLineageTag: number_of_active_months
+		summarizeBy: sum
+		sourceColumn: number_of_active_months
+
+		annotation SummarizationSetBy = Automatic
+
+	column transactions_frequency
+		dataType: double
+		sourceProviderType: numeric(24, 12)
+		lineageTag: 9137259b-db2c-41e2-b853-c2529cfd2b3f
+		sourceLineageTag: transactions_frequency
+		summarizeBy: sum
+		sourceColumn: transactions_frequency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column last_day_of_transactions
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: bbba6c77-c506-49d3-963b-e86530f7b681
+		sourceLineageTag: last_day_of_transactions
+		summarizeBy: none
+		sourceColumn: last_day_of_transactions
+
+		annotation SummarizationSetBy = Automatic
+
+	column average_days_between_transactions
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f37aa450-a8f2-4282-b57f-48e0634ac696
+		sourceLineageTag: average_days_between_transactions
+		summarizeBy: sum
+		sourceColumn: average_days_between_transactions
+
+		annotation SummarizationSetBy = Automatic
+
+	column average_transaction_volume
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 502bca40-8ea3-4d3f-b2bf-62f21bd509e5
+		sourceLineageTag: average_transaction_volume
+		summarizeBy: sum
+		sourceColumn: average_transaction_volume
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column has_had_a_loan
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f92c3d08-444b-4489-8241-862e75b52f85
+		sourceLineageTag: has_had_a_loan
+		summarizeBy: sum
+		sourceColumn: has_had_a_loan
+
+		annotation SummarizationSetBy = Automatic
+
+	column number_of_loans
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5dc1f2a4-91a7-45c7-bd6a-c18a5c12b66d
+		sourceLineageTag: number_of_loans
+		summarizeBy: sum
+		sourceColumn: number_of_loans
+
+		annotation SummarizationSetBy = Automatic
+
+	column most_preferred_channel
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 63f5be56-8169-4506-855d-aa406137d245
+		sourceLineageTag: most_preferred_channel
+		summarizeBy: none
+		sourceColumn: most_preferred_channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_on_regular_salary
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 39f1aac3-6240-41dd-9a26-ef6c5f69ba00
+		sourceLineageTag: is_on_regular_salary
+		summarizeBy: sum
+		sourceColumn: is_on_regular_salary
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_salary_stopped
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 19e940fd-bd48-473e-9bdc-933d1679cae8
+		sourceLineageTag: has_salary_stopped
+		summarizeBy: sum
+		sourceColumn: has_salary_stopped
+
+		annotation SummarizationSetBy = Automatic
+
+	column transactions_frequency_quartile
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: df5ae083-86a1-49fb-925e-8ff370b6b5f4
+		sourceLineageTag: transactions_frequency_quartile
+		summarizeBy: sum
+		sourceColumn: transactions_frequency_quartile
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_months_quartile
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: d0d151ef-c655-4c60-87b4-7b797836ef60
+		sourceLineageTag: active_months_quartile
+		summarizeBy: sum
+		sourceColumn: active_months_quartile
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_days_between_transactions_quartile
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: be02fa92-5f46-4eb8-a8bb-90288f4347a5
+		sourceLineageTag: avg_days_between_transactions_quartile
+		summarizeBy: sum
+		sourceColumn: avg_days_between_transactions_quartile
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_transaction_volume_quartile
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: d2801714-41af-44e2-9e0f-321916f9abed
+		sourceLineageTag: avg_transaction_volume_quartile
+		summarizeBy: sum
+		sourceColumn: avg_transaction_volume_quartile
+
+		annotation SummarizationSetBy = Automatic
+
+	column silver_batch_id
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 70b36333-90ca-4621-bba4-48ed5f45aa16
+		sourceLineageTag: silver_batch_id
+		summarizeBy: none
+		sourceColumn: silver_batch_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_customer_360_individual = entity
+		mode: directLake
+		source
+			entityName: vw_customer_360_individual
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+
