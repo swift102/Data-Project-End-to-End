@@ -84,6 +84,9 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 
 ### 3.1 People Resources
 
+> Contact addresses are intentionally omitted from this public repository. Team members
+> are listed by name and role for attribution only.
+
 | Name | Role | Team / Department | Area of Inquiry |
 |---|---|---|---|
 | Vincent Chitsike | Data Engineer (Overall Team Lead) | Data Engineering | Project direction, priorities, approvals |
@@ -93,6 +96,7 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Tebatso Mamabolo | Business Intelligence Analyst | Data | Reports, dashboards, KPIs, analysis |
 | Tebogo Lesedi | ML Ops | Data | Reports, dashboards, KPIs, analysis |
 | Philisiwe Msibi | Data Engineer | Data | Pipelines, ingestion, storage, transformations |
+
 ### 3.2 Technology Resources
 
 | Resource | Purpose |
@@ -117,7 +121,7 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Account data | Account ID, account type, balance, open date, status |
 | Transaction data | Transaction ID, date, amount, type, merchant, channel |
 | Loan data | Loan ID, customer ID, loan amount, repayment status, arrears |
-| GitHub URL | https://github.com/inhamo/Datasets-Advanced-2026/tree/main/banking_data
+| GitHub URL | https://github.com/inhamo/Datasets-Advanced-2026/tree/main/banking_data |
 
 ### 3.4 Documentation Resources
 
@@ -155,17 +159,6 @@ This section lists the resources needed to plan, build, manage, and deliver the 
 | Audit log | Tracks changes and access |
 | Compliance checklist | Ensures the project follows basic banking data controls |
 | Retention rules | Defines how long data should be kept |
-
-### 3.8 Output Resources
-
-| Output | Purpose |
-|---|---|
-| Bronze tables | Raw ingested data |
-| Silver tables | Cleaned and standardized data |
-| Gold tables | Business-ready data |
-| Star schema | Analytics-ready fact and dimension model |
-| Semantic model | Shared Power BI business layer |
-| Dashboard | Final business-facing report |
 
 ---
 
