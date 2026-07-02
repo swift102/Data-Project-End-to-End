@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_015_transform_atm_logs_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "df8ff5a9-c962-ba28-4c2f-77707de35d77"
+  }
+}

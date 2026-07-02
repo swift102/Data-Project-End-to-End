@@ -1,0 +1,93 @@
+table email_topic_summary
+	lineageTag: 943cb44e-e5c1-4a02-96e7-b623963823c4
+
+	column topic
+		dataType: int64
+		formatString: 0
+		lineageTag: 5d2a7eb6-4d8d-499e-a497-47ff20ce707f
+		summarizeBy: sum
+		sourceColumn: topic
+
+		annotation SummarizationSetBy = Automatic
+
+	column email_count
+		dataType: int64
+		formatString: 0
+		lineageTag: cf07bc72-4945-42d7-ab3a-3092dcfcea9e
+		summarizeBy: sum
+		sourceColumn: email_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column topic_label
+		dataType: string
+		lineageTag: 419c5775-c515-4ba1-b6a8-7123c0d24280
+		summarizeBy: none
+		sourceColumn: topic_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column request_summary
+		dataType: string
+		lineageTag: 08b810ff-1392-46fb-984c-c9b42320e7b2
+		summarizeBy: none
+		sourceColumn: request_summary
+
+		annotation SummarizationSetBy = Automatic
+
+	column top_subjects
+		dataType: string
+		lineageTag: 6ac1b1e5-e357-4e7e-82f3-8fa39e6a4856
+		summarizeBy: none
+		sourceColumn: top_subjects
+
+		annotation SummarizationSetBy = Automatic
+
+	column dominant_subject_share
+		dataType: double
+		lineageTag: 1e39b03b-c7e9-4905-937a-3399ede49f08
+		summarizeBy: sum
+		sourceColumn: dominant_subject_share
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column common_subject_emails
+		dataType: int64
+		formatString: 0
+		lineageTag: 07eb96d9-c383-4cdf-a6e3-7af4a04d551b
+		summarizeBy: sum
+		sourceColumn: common_subject_emails
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_confidence
+		dataType: double
+		lineageTag: 082d3c5d-2158-4309-bee4-1c644a8002da
+		summarizeBy: sum
+		sourceColumn: avg_confidence
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column example_message
+		dataType: string
+		lineageTag: 7a441325-f8a2-4c5f-81f6-52c0b7f82675
+		summarizeBy: none
+		sourceColumn: example_message
+
+		annotation SummarizationSetBy = Automatic
+
+	partition email_topic_summary = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Database("5blwgpioga5epjqnxejlkj3adu-sihetlhtscuudavoqjpmvj3sha.datawarehouse.fabric.microsoft.com", "lh_silver_banking_data"),
+				  #"Navigation 1" = Source{[Schema = "dbo", Item = "email_topic_summary"]}[Data]
+				in
+				  #"Navigation 1"
+
+	annotation PBI_ResultType = Table
+

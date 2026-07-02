@@ -1,0 +1,173 @@
+table bronze_customer_communications_complaints
+	lineageTag: 73b23124-a1d8-445d-9533-e908b66b40ad
+
+	column comm_id
+		dataType: string
+		lineageTag: 4a1d6a02-aabc-4b89-bb58-62e47f1a4372
+		summarizeBy: none
+		sourceColumn: comm_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_id
+		dataType: string
+		lineageTag: b2a29c7f-e667-4ce1-9491-4fd4dabc4dd3
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: 276ad1ea-2998-4d44-b551-8c2ed561de03
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		lineageTag: 9efa5c9d-f3e6-4cbb-b517-66f9398a89ff
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column direction
+		dataType: string
+		lineageTag: 37002678-260a-4f47-9c0d-af440f7076d9
+		summarizeBy: none
+		sourceColumn: direction
+
+		annotation SummarizationSetBy = Automatic
+
+	column timestamp
+		dataType: string
+		lineageTag: 9ac25342-d2ec-4815-80a4-fa7bf79cf26d
+		summarizeBy: none
+		sourceColumn: timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column subject
+		dataType: string
+		lineageTag: 0a98629e-5c4b-49c0-a2d6-ab5542e4e022
+		summarizeBy: none
+		sourceColumn: subject
+
+		annotation SummarizationSetBy = Automatic
+
+	column body
+		dataType: string
+		lineageTag: b197b2ef-0562-4eda-950c-bafd09da5b7f
+		summarizeBy: none
+		sourceColumn: body
+
+		annotation SummarizationSetBy = Automatic
+
+	column sentiment
+		dataType: string
+		lineageTag: 04e09c92-d32b-45c1-ad31-e2c61a79e94e
+		summarizeBy: none
+		sourceColumn: sentiment
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_complaint
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 8167d652-51bd-434c-8777-c417f285ff00
+		summarizeBy: none
+		sourceColumn: is_complaint
+
+		annotation SummarizationSetBy = Automatic
+
+	column complaint_category
+		dataType: string
+		lineageTag: 0ae6ff96-9300-4ede-b495-3132d0741b8d
+		summarizeBy: none
+		sourceColumn: complaint_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolution_status
+		dataType: string
+		lineageTag: 4a641f72-f802-47b2-8d6c-e63a51a6ac7c
+		summarizeBy: none
+		sourceColumn: resolution_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolution_notes
+		dataType: string
+		lineageTag: cc1641f3-4b9d-416f-871d-30d93da2d5ae
+		summarizeBy: none
+		sourceColumn: resolution_notes
+
+		annotation SummarizationSetBy = Automatic
+
+	column _source_file
+		dataType: string
+		lineageTag: 594545da-e768-49c9-a53f-744f082e1eaf
+		summarizeBy: none
+		sourceColumn: _source_file
+
+		annotation SummarizationSetBy = Automatic
+
+	column _ingest_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 3eec425a-dcd1-40b6-90be-79d539bd1bba
+		summarizeBy: none
+		sourceColumn: _ingest_timestamp
+
+		variation Variation
+			isDefault
+			relationship: 2f3742b1-cac0-40e2-a5e5-01bb9c6bc346
+			defaultHierarchy: LocalDateTable_01569840-398c-463b-9109-8fa6198985ea.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column _batch_id
+		dataType: string
+		lineageTag: cd8aea9c-3535-425f-ad12-89b2370e2341
+		summarizeBy: none
+		sourceColumn: _batch_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column _commit_sha
+		dataType: string
+		lineageTag: 8e972c30-ee1b-4542-a4a0-a92059721275
+		summarizeBy: none
+		sourceColumn: _commit_sha
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: string
+		lineageTag: 5f28d440-0659-45b2-b223-258630eccdb3
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: string
+		lineageTag: 8e6c0cde-7571-4f07-8dd9-a294af13729a
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bronze_customer_communications_complaints = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Database("5blwgpioga5epjqnxejlkj3adu-sihetlhtscuudavoqjpmvj3sha.datawarehouse.fabric.microsoft.com", "lh_bronze_banking_data_modern_data", [CommandTimeout = #duration(0, 2, 0, 0)]),
+				  #"Navigation 1" = Source{[Schema = "dbo", Item = "bronze_customer_communications_complaints"]}[Data]
+				in
+				  #"Navigation 1"
+
+	annotation PBI_ResultType = Table
+

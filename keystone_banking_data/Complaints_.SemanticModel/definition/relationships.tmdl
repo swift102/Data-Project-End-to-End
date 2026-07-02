@@ -1,0 +1,5 @@
+relationship 2f3742b1-cac0-40e2-a5e5-01bb9c6bc346
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bronze_customer_communications_complaints._ingest_timestamp
+	toColumn: LocalDateTable_01569840-398c-463b-9109-8fa6198985ea.Date
+

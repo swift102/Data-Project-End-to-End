@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_013_transform_account_limits_history_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "ce769427-7b45-b6da-49ea-7e8ebc67f851"
+  }
+}

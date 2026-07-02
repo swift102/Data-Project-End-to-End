@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_011_transform_loan_participations_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5e197290-febe-993c-441d-07cc9f8340a1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "200_003_build_bridge_customer_account_silver"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9fcfdb94-6c30-88cc-4b07-8e363ddbce00"
+  }
+}
