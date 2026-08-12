@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment
+.env
+.venv
+env/
+venv/
+
+# Databricks
+.databrickscfg
+*.token
+
+# Secrets (safety net)
+*secret*
+*password*
+*credentials*
+*.key
+*.pem
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Project specific
+data/
+*.csv
+*.parquet
+
+# Logs
+*.log
