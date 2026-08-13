@@ -1,0 +1,31 @@
+# Personal documentation (not shared with collaborators)
+keystone_banking_data/.PERSONAL_README.md
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+
+# Databricks temporary files
+.databricks/
+*.log
